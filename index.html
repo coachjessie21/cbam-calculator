@@ -20,9 +20,9 @@
       --amber: #f59e0b;
       --red: #ef4444;
       --red-dim: #450a0a;
-      --text: #e2e8f0;
-      --text2: #94a3b8;
-      --text3: #64748b;
+      --text: #f1f5f9;
+      --text2: #c4cdd8;
+      --text3: #94a3b8;
       --radius: 10px;
     }
 
@@ -30,7 +30,8 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.7;
+      font-size: 17px;
       min-height: 100vh;
     }
 
@@ -50,7 +51,7 @@
     .header-logo img { height: 48px; width: auto; display: block; }
     .header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .tool-title h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; color: #fff; line-height: 1.3; }
-    .tool-title p { color: var(--text2); font-size: 0.9rem; margin-top: 4px; }
+    .tool-title p { color: var(--text2); font-size: 1rem; margin-top: 4px; }
     .carbon-price-badge {
       background: var(--card2);
       border: 1px solid var(--border);
@@ -59,15 +60,15 @@
       text-align: right;
       min-width: 160px;
     }
-    .carbon-price-badge .label { font-size: 0.75rem; color: var(--text2); }
+    .carbon-price-badge .label { font-size: 0.85rem; color: var(--text2); }
     .carbon-price-badge .price { font-size: 1.6rem; font-weight: 700; color: var(--amber); }
-    .carbon-price-badge .note { font-size: 0.7rem; color: var(--text3); margin-top: 2px; }
+    .carbon-price-badge .note { font-size: 0.82rem; color: var(--text3); margin-top: 2px; }
     .header-desc {
       background: var(--blue-dim);
       border: 1px solid #2a4a7a;
       border-radius: var(--radius);
       padding: 12px 16px;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: #93c5fd;
     }
 
@@ -140,18 +141,18 @@
       align-items: center;
       gap: 10px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       margin-bottom: 8px;
     }
     .checker-result .result-head .badge {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       padding: 2px 8px;
       border-radius: 20px;
       font-weight: 700;
     }
     .applicable .badge { background: var(--green); color: #000; }
     .not-applicable .badge { background: var(--amber); color: #000; }
-    .checker-result p { font-size: 0.85rem; color: var(--text2); }
+    .checker-result p { font-size: 0.95rem; color: var(--text2); }
     .btn-goto {
       margin-top: 12px;
       display: inline-block;
@@ -160,7 +161,7 @@
       border: none;
       border-radius: var(--radius);
       padding: 10px 20px;
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
@@ -175,7 +176,7 @@
 
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label {
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text2);
       display: flex;
@@ -183,7 +184,7 @@
       align-items: center;
     }
     .form-group label .cn-tag {
-      font-size: 0.7rem;
+      font-size: 0.82rem;
       color: var(--text3);
       font-weight: 400;
     }
@@ -203,10 +204,10 @@
     .form-group select:focus,
     .form-group input[type="number"]:focus { border-color: var(--blue); }
     .form-group select option { background: #1c2b3f; }
-    .input-hint { font-size: 0.72rem; color: var(--text3); }
+    .input-hint { font-size: 0.85rem; color: var(--text3); }
 
     .benchmark-note {
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       color: var(--amber);
       margin-top: 2px;
     }
@@ -234,15 +235,15 @@
       border-radius: var(--radius);
       padding: 18px 20px;
     }
-    .usage-box h3 { font-size: 0.85rem; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
+    .usage-box h3 { font-size: 0.95rem; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
     .usage-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 560px) { .usage-cols { grid-template-columns: 1fr; } }
-    .usage-col h4 { font-size: 0.78rem; font-weight: 700; margin-bottom: 8px; }
+    .usage-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
     .usage-col.ok h4 { color: var(--green); }
     .usage-col.no h4 { color: var(--red); }
     .usage-col ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
     .usage-col li {
-      font-size: 0.78rem;
+      font-size: 0.9rem;
       color: var(--text2);
       padding-left: 14px;
       position: relative;
@@ -277,10 +278,10 @@
       border-radius: var(--radius);
       padding: 20px 24px;
     }
-    .big-number-card .label { font-size: 0.75rem; color: #fca5a5; font-weight: 600; margin-bottom: 6px; }
+    .big-number-card .label { font-size: 0.85rem; color: #fca5a5; font-weight: 600; margin-bottom: 6px; }
     .big-number-card .eur { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.1; }
-    .big-number-card .ntd { font-size: 0.9rem; color: #fca5a5; margin-top: 4px; }
-    .big-number-card .sub { font-size: 0.75rem; color: #fca5a5; margin-top: 8px; opacity: 0.7; }
+    .big-number-card .ntd { font-size: 1rem; color: #fca5a5; margin-top: 4px; }
+    .big-number-card .sub { font-size: 0.85rem; color: #fca5a5; margin-top: 8px; opacity: 0.7; }
 
     .unit-cost-card {
       background: var(--card2);
@@ -288,13 +289,13 @@
       border-radius: var(--radius);
       padding: 20px 18px;
     }
-    .unit-cost-card .label { font-size: 0.75rem; color: var(--text2); font-weight: 600; margin-bottom: 6px; }
+    .unit-cost-card .label { font-size: 0.85rem; color: var(--text2); font-weight: 600; margin-bottom: 6px; }
     .unit-cost-card .value { font-size: 1.4rem; font-weight: 700; color: var(--amber); }
-    .unit-cost-card .sub { font-size: 0.72rem; color: var(--text3); margin-top: 8px; }
+    .unit-cost-card .sub { font-size: 0.82rem; color: var(--text3); margin-top: 8px; }
 
     /* ── Bar Chart ── */
     .chart-section h3 {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text2);
       margin-bottom: 14px;
@@ -303,7 +304,7 @@
     .bar-label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: var(--text2);
       margin-bottom: 6px;
     }
@@ -324,7 +325,7 @@
     .bar-fill.benchmark { background: var(--green); }
     .savings-tag {
       display: inline-block;
-      font-size: 0.72rem;
+      font-size: 0.82rem;
       color: var(--green);
       font-weight: 700;
       margin-top: 4px;
@@ -339,20 +340,20 @@
     }
     .action-num {
       flex-shrink: 0;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       background: var(--blue-dim);
       border: 1px solid var(--blue);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--blue);
       margin-top: 1px;
     }
-    .action-text { font-size: 0.88rem; color: var(--text2); line-height: 1.5; }
+    .action-text { font-size: 0.95rem; color: var(--text2); line-height: 1.6; }
 
     /* ── Timeline ── */
     .timeline { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
@@ -360,7 +361,7 @@
       display: flex;
       gap: 14px;
       align-items: flex-start;
-      font-size: 0.82rem;
+      font-size: 0.92rem;
     }
     .tl-date {
       flex-shrink: 0;
@@ -379,7 +380,7 @@
       text-align: center;
     }
     .cta-box h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .cta-box p { font-size: 0.88rem; color: var(--text2); margin-bottom: 20px; }
+    .cta-box p { font-size: 0.95rem; color: var(--text2); margin-bottom: 20px; }
     .btn-cta {
       display: inline-block;
       background: var(--green);
@@ -393,7 +394,7 @@
     }
     .btn-cta:hover { background: #16a34a; color: #fff; }
     .btn-cta:active { transform: scale(0.98); }
-    .cta-sub { font-size: 0.75rem; color: var(--text3); margin-top: 12px; }
+    .cta-sub { font-size: 0.85rem; color: var(--text3); margin-top: 12px; }
 
     /* ── Footer ── */
     footer {
@@ -402,15 +403,15 @@
       margin-top: 8px;
     }
     .footer-block { margin-bottom: 20px; }
-    .footer-block h4 { font-size: 0.78rem; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+    .footer-block h4 { font-size: 0.9rem; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
     .footer-block p, .footer-block li {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       color: var(--text3);
       line-height: 1.7;
     }
     .footer-block ul { list-style: none; }
     .footer-copyright {
-      font-size: 0.72rem;
+      font-size: 0.82rem;
       color: var(--text3);
       border-top: 1px solid var(--border);
       padding-top: 16px;
@@ -422,7 +423,7 @@
     .divider { height: 1px; background: var(--border); margin: 4px 0; }
     .tag {
       display: inline-block;
-      font-size: 0.68rem;
+      font-size: 0.8rem;
       font-weight: 700;
       padding: 2px 7px;
       border-radius: 4px;
