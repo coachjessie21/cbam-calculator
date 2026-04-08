@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EU CBAM 碳關稅試算器 | Taiwan Exporter's CBAM Cost Calculator</title>
+  <meta name="description" content="台灣出口商 EU CBAM 碳邊境調整費用快速試算工具。適用鋼鐵、鋁、扣件、水泥、化肥。僅供內部評估參考。">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1520;
+      --card: #162032;
+      --card2: #1c2b3f;
+      --border: #253347;
+      --blue: #3b7dd8;
+      --blue-dim: #1e3a5f;
+      --green: #22c55e;
+      --green-dim: #14532d;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --red-dim: #450a0a;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--blue); }
+
+    /* ── Layout ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #0d1e35 0%, #0d1520 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 0 32px;
+    }
+    .header-inner { display: flex; flex-direction: column; gap: 16px; }
+    .header-logo { margin-bottom: 4px; }
+    .header-logo img { height: 48px; width: auto; display: block; }
+    .header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .tool-title h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; color: #fff; line-height: 1.3; }
+    .tool-title p { color: var(--text2); font-size: 0.9rem; margin-top: 4px; }
+    .carbon-price-badge {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      text-align: right;
+      min-width: 160px;
+    }
+    .carbon-price-badge .label { font-size: 0.75rem; color: var(--text2); }
+    .carbon-price-badge .price { font-size: 1.6rem; font-weight: 700; color: var(--amber); }
+    .carbon-price-badge .note { font-size: 0.7rem; color: var(--text3); margin-top: 2px; }
+    .header-desc {
+      background: var(--blue-dim);
+      border: 1px solid #2a4a7a;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #93c5fd;
+    }
+
+    /* ── Section ── */
+    section { padding: 28px 0; }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--blue);
+      border-radius: 2px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .card + .card { margin-top: 16px; }
+
+    /* ── Checker ── */
+    .checker-input-wrap { position: relative; }
+    .checker-input {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .checker-input:focus { border-color: var(--blue); }
+    .checker-input::placeholder { color: var(--text3); }
+
+    .checker-result {
+      margin-top: 14px;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+    .checker-result.applicable {
+      background: #0d2a1a;
+      border: 1px solid #166534;
+      display: block;
+    }
+    .checker-result.not-applicable {
+      background: #1a1a0d;
+      border: 1px solid #713f12;
+      display: block;
+    }
+    .checker-result .result-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .checker-result .result-head .badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .applicable .badge { background: var(--green); color: #000; }
+    .not-applicable .badge { background: var(--amber); color: #000; }
+    .checker-result p { font-size: 0.85rem; color: var(--text2); }
+    .btn-goto {
+      margin-top: 12px;
+      display: inline-block;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-goto:hover { background: #2563c0; }
+
+    /* ── Form ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-full { grid-column: 1 / -1; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-group label .cn-tag {
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-weight: 400;
+    }
+    .form-group select,
+    .form-group input[type="number"] {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group select:focus,
+    .form-group input[type="number"]:focus { border-color: var(--blue); }
+    .form-group select option { background: #1c2b3f; }
+    .input-hint { font-size: 0.72rem; color: var(--text3); }
+
+    .benchmark-note {
+      font-size: 0.72rem;
+      color: var(--amber);
+      margin-top: 2px;
+    }
+
+    .btn-calc {
+      width: 100%;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-calc:hover { background: #2563c0; }
+    .btn-calc:active { transform: scale(0.99); }
+
+    /* ── Usage Warning ── */
+    .usage-box {
+      background: #1a1500;
+      border: 1px solid #713f12;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .usage-box h3 { font-size: 0.85rem; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
+    .usage-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 560px) { .usage-cols { grid-template-columns: 1fr; } }
+    .usage-col h4 { font-size: 0.78rem; font-weight: 700; margin-bottom: 8px; }
+    .usage-col.ok h4 { color: var(--green); }
+    .usage-col.no h4 { color: var(--red); }
+    .usage-col ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .usage-col li {
+      font-size: 0.78rem;
+      color: var(--text2);
+      padding-left: 14px;
+      position: relative;
+    }
+    .usage-col li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .usage-col.ok li::before { background: var(--green); }
+    .usage-col.no li::before { background: var(--red); }
+
+    /* ── Results ── */
+    #results { display: none; }
+    #results.visible { display: block; }
+
+    .result-numbers {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 560px) { .result-numbers { grid-template-columns: 1fr; } }
+
+    .big-number-card {
+      background: var(--red-dim);
+      border: 1px solid #7f1d1d;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+    .big-number-card .label { font-size: 0.75rem; color: #fca5a5; font-weight: 600; margin-bottom: 6px; }
+    .big-number-card .eur { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.1; }
+    .big-number-card .ntd { font-size: 0.9rem; color: #fca5a5; margin-top: 4px; }
+    .big-number-card .sub { font-size: 0.75rem; color: #fca5a5; margin-top: 8px; opacity: 0.7; }
+
+    .unit-cost-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+    }
+    .unit-cost-card .label { font-size: 0.75rem; color: var(--text2); font-weight: 600; margin-bottom: 6px; }
+    .unit-cost-card .value { font-size: 1.4rem; font-weight: 700; color: var(--amber); }
+    .unit-cost-card .sub { font-size: 0.72rem; color: var(--text3); margin-top: 8px; }
+
+    /* ── Bar Chart ── */
+    .chart-section h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 14px;
+    }
+    .bar-row { margin-bottom: 16px; }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+    .bar-label .bar-eur { font-weight: 700; color: var(--text); }
+    .bar-track {
+      background: var(--card2);
+      border-radius: 4px;
+      height: 18px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+      min-width: 4px;
+    }
+    .bar-fill.current { background: var(--red); }
+    .bar-fill.benchmark { background: var(--green); }
+    .savings-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      color: var(--green);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    /* ── Actions ── */
+    .action-list { display: flex; flex-direction: column; gap: 12px; }
+    .action-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .action-num {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      background: var(--blue-dim);
+      border: 1px solid var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin-top: 1px;
+    }
+    .action-text { font-size: 0.88rem; color: var(--text2); line-height: 1.5; }
+
+    /* ── Timeline ── */
+    .timeline { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 0.82rem;
+    }
+    .tl-date {
+      flex-shrink: 0;
+      font-weight: 700;
+      color: var(--amber);
+      min-width: 80px;
+    }
+    .tl-desc { color: var(--text2); }
+
+    /* ── CTA ── */
+    .cta-box {
+      background: linear-gradient(135deg, #1e3a5f 0%, #162032 100%);
+      border: 1px solid #2a4a7a;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .cta-box h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .cta-box p { font-size: 0.88rem; color: var(--text2); margin-bottom: 20px; }
+    .btn-cta {
+      display: inline-block;
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-cta:hover { background: #16a34a; color: #fff; }
+    .btn-cta:active { transform: scale(0.98); }
+    .cta-sub { font-size: 0.75rem; color: var(--text3); margin-top: 12px; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0 48px;
+      margin-top: 8px;
+    }
+    .footer-block { margin-bottom: 20px; }
+    .footer-block h4 { font-size: 0.78rem; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+    .footer-block p, .footer-block li {
+      font-size: 0.75rem;
+      color: var(--text3);
+      line-height: 1.7;
+    }
+    .footer-block ul { list-style: none; }
+    .footer-copyright {
+      font-size: 0.72rem;
+      color: var(--text3);
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      margin-top: 20px;
+    }
+
+    /* ── Misc ── */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+    .divider { height: 1px; background: var(--border); margin: 4px 0; }
+    .tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--blue-dim);
+      color: #93c5fd;
+      margin-left: 6px;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HEADER ══ -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="header-logo">
+        <img src="ahbase-logo.png" alt="覺心營股份有限公司 Awakening Heart Base Corporation">
+      </div>
+      <div class="header-top">
+        <div class="tool-title">
+          <h1>EU CBAM 出口碳關稅試算器</h1>
+          <p>Taiwan Exporter's CBAM Cost Calculator</p>
+        </div>
+        <div class="carbon-price-badge">
+          <div class="label">EU ETS 參考碳價</div>
+          <div class="price" id="ets-price">€<span id="ets-val">75</span></div>
+          <div class="note">/公噸 CO₂e &nbsp;·&nbsp; <span id="ets-updated">參考值</span></div>
+          <div style="margin-top:8px;">
+            <input type="number" id="ets-override" min="1" max="300" value="75"
+              style="width:80px;background:#0d1520;border:1px solid #253347;border-radius:6px;
+                     padding:4px 8px;color:#f59e0b;font-size:0.8rem;text-align:center;outline:none;"
+              title="可手動修改碳價">
+            <span style="font-size:0.68rem;color:#475569;margin-left:4px;">手動調整</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-desc">
+        <strong>使用說明：</strong>
+        輸入你的出口產品與數量，立即估算 2026 年起每年需繳的 EU CBAM 碳邊境費用，以及減碳改善後的節省空間。
+        本工具結果僅供內部評估參考，不作為官方申報依據。
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════ MAIN ═══ -->
+<main>
+  <div class="container">
+
+    <!-- ── STEP 0: 產品適用性查詢 ── -->
+    <section>
+      <div class="section-title">步驟一：確認你的產品是否適用 CBAM</div>
+      <div class="card">
+        <div class="form-group">
+          <label>輸入產品名稱或 HS / CN 碼</label>
+          <div class="checker-input-wrap">
+            <input
+              type="text"
+              id="checker-input"
+              class="checker-input"
+              placeholder="例：鋼捲、螺絲、鋁擠型、工具機、PCB…"
+              autocomplete="off"
+            >
+          </div>
+        </div>
+        <div class="checker-result" id="checker-result"></div>
+      </div>
+    </section>
+
+    <!-- ── STEP 1: 計算表單 ── -->
+    <section id="calc-section">
+      <div class="section-title">步驟二：試算 CBAM 年度費用</div>
+
+      <!-- 使用情境說明（顯眼位置） -->
+      <div class="usage-box" style="margin-bottom:16px;">
+        <h3>⚠ 使用前請確認適用情境</h3>
+        <div class="usage-cols">
+          <div class="usage-col ok">
+            <h4>✓ 適合用來</h4>
+            <ul>
+              <li>快速估算 CBAM 費用量級（幾百萬 vs 幾千萬）</li>
+              <li>內部討論、主管簡報、減碳 ROI 初步評估</li>
+              <li>了解改善碳排強度對費用的影響幅度</li>
+            </ul>
+          </div>
+          <div class="usage-col no">
+            <h4>✗ 不適合用來</h4>
+            <ul>
+              <li>向 EU 官方申報 CBAM 數據（須第三方查驗）</li>
+              <li>替代專業 ESG 顧問或法律意見</li>
+              <li>取代向主管機關確認的正式法規遵循程序</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="form-grid">
+          <!-- 產品類別 -->
+          <div class="form-group">
+            <label>
+              產品類別
+              <span class="cn-tag" id="cn-tag-label"></span>
+            </label>
+            <select id="product-cat" onchange="onProductChange()">
+              <option value="">── 請選擇 ──</option>
+              <option value="steel">鋼鐵 Steel（CN 7201–7229）</option>
+              <option value="fastener">扣件 Fasteners（CN 7318）</option>
+              <option value="aluminium">鋁 Aluminium（CN 7601–7616）</option>
+              <option value="cement">水泥 Cement（CN 2523）</option>
+              <option value="fertiliser">化肥 / 氫 Fertiliser / H₂</option>
+            </select>
+          </div>
+
+          <!-- 子類別 -->
+          <div class="form-group">
+            <label>子類別 / 生產路線</label>
+            <select id="product-sub" onchange="onSubChange()">
+              <option value="">── 請先選產品類別 ──</option>
+            </select>
+          </div>
+
+          <!-- 年出口量 -->
+          <div class="form-group">
+            <label>年出口量至 EU（公噸）</label>
+            <input type="number" id="volume" min="1" placeholder="例：1000" value="">
+            <span class="input-hint">輸入每年出口歐盟的總重量（公噸/年）</span>
+          </div>
+
+          <!-- 碳排強度 -->
+          <div class="form-group">
+            <label>碳排強度（tCO₂/公噸產品）</label>
+            <input type="number" id="intensity" min="0.01" step="0.01" placeholder="依子類別自動帶入">
+            <span class="input-hint">
+              預設值為業界平均；若已有第三方查驗數據，請填入實際值。
+            </span>
+            <span class="benchmark-note" id="benchmark-hint"></span>
+          </div>
+
+          <!-- 台灣碳費 -->
+          <div class="form-group">
+            <label>台灣碳費抵扣（€/tCO₂）</label>
+            <input type="number" id="tw-fee" min="0" step="0.1" value="8">
+            <span class="input-hint">
+              台灣碳費 NT$300/tCO₂e ≈ €8，EU 已原則認列可抵扣。
+              以歐盟委員會最新公告為準。
+            </span>
+          </div>
+
+          <!-- EU ETS 碳價（唯讀，從 header 同步） -->
+          <div class="form-group">
+            <label>EU ETS 碳價（€/tCO₂）</label>
+            <input type="number" id="ets-form" min="1" value="75" readonly
+              style="opacity:0.7;cursor:not-allowed;">
+            <span class="input-hint">從上方「手動調整」欄位修改</span>
+          </div>
+
+          <!-- 換算匯率（隱藏但可影響 NT$ 顯示） -->
+          <div class="form-group">
+            <label>參考匯率（1 € = NT$）</label>
+            <input type="number" id="fx-rate" min="1" value="34">
+            <span class="input-hint">用於換算 NT$ 顯示，不影響 € 計算</span>
+          </div>
+
+        </div>
+        <button class="btn-calc" onclick="calculate()">計算 CBAM 年度費用 →</button>
+      </div>
+    </section>
+
+    <!-- ── STEP 2: 計算結果 ── -->
+    <section id="results">
+      <div class="section-title">試算結果</div>
+
+      <!-- 主要數字 -->
+      <div class="result-numbers">
+        <div class="big-number-card">
+          <div class="label">每年 CBAM 費用估算</div>
+          <div class="eur">€<span id="r-eur">0</span></div>
+          <div class="ntd">≈ NT$ <span id="r-ntd">0</span></div>
+          <div class="sub" id="r-formula"></div>
+        </div>
+        <div class="unit-cost-card">
+          <div class="label">每公噸額外成本</div>
+          <div class="value">€<span id="r-unit">0</span></div>
+          <div class="sub" id="r-unit-sub"></div>
+        </div>
+      </div>
+
+      <!-- 情境比較 -->
+      <div class="card" id="benchmark-section">
+        <div class="chart-section">
+          <h3>情境比較 — 若達到 EU 基準碳排強度</h3>
+          <div class="bar-row">
+            <div class="bar-label">
+              <span>目前情況（碳排強度 <span id="b-current-int">—</span> tCO₂/t）</span>
+              <span class="bar-eur">€<span id="b-current-eur">—</span></span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill current" id="bar-current" style="width:100%"></div>
+            </div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">
+              <span>達 EU 基準值（<span id="b-bench-int">—</span> tCO₂/t）</span>
+              <span class="bar-eur">€<span id="b-bench-eur">—</span></span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill benchmark" id="bar-bench" style="width:0%"></div>
+            </div>
+            <div class="savings-tag" id="savings-tag"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 行動建議 -->
+      <div class="card" style="margin-top:16px;">
+        <div class="section-title" style="margin-bottom:16px;">優先減碳行動建議</div>
+        <div class="action-list" id="action-list"></div>
+
+        <div style="margin-top:24px;">
+          <div class="section-title" style="margin-bottom:12px;">CBAM 重要時程</div>
+          <div class="timeline">
+            <div class="tl-item">
+              <span class="tl-date">2026 年起</span>
+              <span class="tl-desc">CBAM 正式課徵，出口商需提交 CBAM 申報，並購買對應數量的 CBAM 憑證</span>
+            </div>
+            <div class="tl-item">
+              <span class="tl-date">2027/02/01</span>
+              <span class="tl-desc">首次 CBAM 憑證繳交截止（基於 2026 年全年實際排放量）</span>
+            </div>
+            <div class="tl-item">
+              <span class="tl-date">2027 年起</span>
+              <span class="tl-desc">EU ETS 碳價每週更新，CBAM 憑證價格連動調整</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-box" style="margin-top:24px;">
+        <h3>想要具體的 ESG 減碳路徑圖？</h3>
+        <p>
+          了解你的公司從哪裡開始、如何降低 CBAM 費用、如何建立碳排查驗能力——<br>
+          覺心營 ESG 顧問提供企業專屬諮詢服務。
+        </p>
+        <a href="https://calendar.app.google/RdhqCaHHaYdSKVscA" target="_blank" rel="noopener" class="btn-cta">預約免費 30 分鐘 ESG 顧問諮詢</a>
+        <div class="cta-sub">預約後將有專人與你確認時間 · 不收費 · 不推銷</div>
+      </div>
+    </section>
+
+  </div><!-- /container -->
+</main>
+
+<!-- ═══════════════════════════════════════ FOOTER ══ -->
+<footer>
+  <div class="container">
+
+    <div class="footer-block">
+      <h4>【數據來源說明】</h4>
+      <p>
+        EU ETS 碳價：本工具使用者手動設定之參考值，建議參考
+        <a href="https://sandbag.be/carbon-price-viewer/" target="_blank" rel="noopener">Sandbag Carbon Price Viewer</a>
+        或 <a href="https://tradingeconomics.com/commodity/carbon" target="_blank" rel="noopener">Trading Economics</a>
+        取得最新市場報價。<br>
+        碳排強度預設值來源：EU CBAM Regulation (EU) 2023/956 Annex I 及歐盟聯合研究中心（JRC）官方基準值。<br>
+        台灣碳費換算：以 NT$300/公噸 CO₂e，匯率採估算值（1€ ≈ NT$34）。NT$ 顯示僅供參考，請以 € 計算為準。
+      </p>
+    </div>
+
+    <div class="footer-block">
+      <h4>【免責聲明】</h4>
+      <p>
+        本工具提供之試算結果，<strong>僅供企業內部評估與參考用途，不構成法律、財務或法規遵循建議。</strong><br><br>
+        實際 CBAM 申報義務須依 EU 官方規定辦理，並由歐盟認可之第三方查驗機構出具查驗報告。
+        台灣碳費是否獲 EU 認列為可抵扣費用，以歐盟委員會最新公告為準，計算前請確認最新認列狀態。<br><br>
+        相關法規持續更新，本工具之數據及計算邏輯可能與最新官方版本存在差異。
+        使用前請至
+        <a href="https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en" target="_blank" rel="noopener">EU 官方 CBAM 網站</a>
+        確認最新規範。<br><br>
+        <strong>本工具製作者不對因使用本試算結果所產生之任何商業決策、財務損失或法規遵循問題負責。</strong>
+      </p>
+    </div>
+
+    <div class="footer-block">
+      <h4>【正式申報資源】</h4>
+      <ul>
+        <li>政府 CBAM 服務平台：<a href="https://www.greentrade.org.tw/CBAM/" target="_blank" rel="noopener">greentrade.org.tw/CBAM</a></li>
+        <li>EU 官方 CBAM 資訊：<a href="https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en" target="_blank" rel="noopener">taxation-customs.ec.europa.eu</a></li>
+        <li>如需 ESG 顧問協助：請聯絡覺心營 ESG 顧問</li>
+      </ul>
+    </div>
+
+    <div class="footer-copyright">
+      <img src="ahbase-logo.png" alt="覺心營股份有限公司" style="height:32px;width:auto;display:block;margin-bottom:10px;opacity:0.85;">
+      © 2026 覺心營股份有限公司 Awakening Heart Base Corporation. All rights reserved.<br>
+      本工具以 AI 輔助（Vibe Coding）製作，數據以官方來源為準。
+    </div>
+
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════ SCRIPT ══ -->
+<script>
+  // ── 產品資料庫 ──────────────────────────────────────
+  const PRODUCTS = {
+    steel: {
+      name: '鋼鐵 Steel', cn: 'CN 7201–7229',
+      subs: [
+        { id: 'hrc_bof', name: '熱軋扁鋼捲 HRC（高爐 BF/BOF）', def: 1.370, bench: 1.10 },
+        { id: 'hrc_eaf', name: '熱軋扁鋼捲 HRC（電弧爐 EAF）',   def: 0.072, bench: null },
+        { id: 'cold',    name: '冷軋 / 鍍鋅板（BF/BOF）',         def: 1.500, bench: 1.20 },
+        { id: 'bars',    name: '棒材 / 線材（BF/BOF）',            def: 1.300, bench: 1.00 },
+      ]
+    },
+    fastener: {
+      name: '扣件 Fasteners', cn: 'CN 7318',
+      subs: [
+        { id: 'fw', name: '台灣鋼製扣件（螺絲 / 螺栓 / 螺帽）', def: 1.85, bench: 1.10 },
+      ]
+    },
+    aluminium: {
+      name: '鋁 Aluminium', cn: 'CN 7601–7616',
+      subs: [
+        { id: 'primary',   name: '原生鋁 Primary Aluminium',        def: 1.423, bench: null },
+        { id: 'secondary', name: '再生鋁 Secondary（>50% 廢料）',   def: 0.091, bench: null },
+        { id: 'extrusion', name: '鋁擠型材 Extrusion / Rolled',     def: 1.500, bench: 1.10 },
+      ]
+    },
+    cement: {
+      name: '水泥 Cement', cn: 'CN 2523',
+      subs: [
+        { id: 'clinker',  name: '水泥熟料 Clinker',         def: 0.87, bench: null },
+        { id: 'portland', name: '普通波特蘭水泥 Portland',   def: 0.83, bench: 0.65 },
+      ]
+    },
+    fertiliser: {
+      name: '化肥 / 氫 Fertiliser / H₂', cn: 'CN 2814, 3102, 2804',
+      subs: [
+        { id: 'urea',    name: '尿素 Urea',                  def: 2.30,  bench: 1.80 },
+        { id: 'grey_h2', name: '灰氫 Grey Hydrogen',         def: 10.00, bench: null },
+      ]
+    }
+  };
+
+  // ── 行動建議 ─────────────────────────────────────────
+  const ACTIONS = {
+    steel: [
+      '評估轉換電弧爐（EAF）生產路線：碳排強度可從 1.37 降至 0.07 tCO₂/t，節省 CBAM 費用達 90% 以上',
+      '導入廢鋼回收比例，提升廢鋼使用率可顯著降低嵌入碳排，同時降低原料成本',
+      '申請第三方碳排放查驗，以「實際排放數值」取代 EU 預設值（預設值通常偏高，實際值可降低申報費用）',
+    ],
+    fastener: [
+      '要求上游鋼材供應商提供碳排強度憑證，優先選用低碳鋼材來源（尤其是 EAF 電弧爐鋼）',
+      '申請第三方碳排放查驗，以實際值取代 EU 預設值（實際查驗值通常低於預設，可降低 CBAM 費用）',
+      '評估導入再生鋼材比例，並在詢價時將「碳排強度」納入供應商評選標準',
+    ],
+    aluminium: [
+      '優先採用再生鋁（Secondary Aluminium）：碳排強度可降低 94%（1.42 → 0.09 tCO₂/t），大幅削減 CBAM 費用',
+      '評估採購再生能源電力（綠電）用於熔鋁製程，直接降低製程間接排放（Scope 2）',
+      '申請第三方碳排查驗取得實際排放數值，建立可提交 EU 的正式排放數據',
+    ],
+    cement: [
+      '提高熟料替代率（爐石粉、飛灰），每提升 10% 替代率約可降低 8% 製程碳排放',
+      '評估廢熱回收發電系統，降低製程間接排放並提升能源效率',
+      '申請第三方碳排查驗，以實際值取代預設值，取得正式查驗報告',
+    ],
+    fertiliser: [
+      '評估採購綠氨或綠氫原料替代天然氣重組製程，從根本降低製程碳排放',
+      '優化製程能源效率，尤其是合成氨（Haber-Bosch）製程的能源消耗',
+      '申請第三方碳排查驗，建立可提交 EU 的正式查驗報告',
+    ],
+  };
+
+  // ── 關鍵字對應 ───────────────────────────────────────
+  const KEYWORDS = [
+    { words: ['鋼捲','鋼板','棒材','型鋼','線材','熱軋','冷軋','鍍鋅','鋼鐵','steel','hrc','7201','7208','7209','7210','7213','7214','7215','7216','7217','7218','7219','7220','7221','7222','7223','7224','7225','7226','7227','7228'], type: 'applicable', product: 'steel', name: '鋼鐵' },
+    { words: ['螺絲','螺栓','螺帽','扣件','螺釘','墊圈','fastener','screw','bolt','nut','7318'], type: 'applicable', product: 'fastener', name: '扣件（CN 7318）' },
+    { words: ['鋁','鋁板','鋁管','鋁擠型','鋁型材','aluminium','aluminum','7601','7604','7606','7608'], type: 'applicable', product: 'aluminium', name: '鋁' },
+    { words: ['水泥','熟料','cement','clinker','2523'], type: 'applicable', product: 'cement', name: '水泥' },
+    { words: ['化肥','尿素','氫','氨','urea','hydrogen','fertiliser','fertilizer','2814','3102','2804'], type: 'applicable', product: 'fertiliser', name: '化肥 / 氫' },
+    { words: ['工具機','cnc','車床','銑床','磨床','加工機','machine tool','lathe','8457','8458','8460'], type: 'not', reason: '工具機屬機械類（HS 第 84 章），目前不在 CBAM Annex I 直接適用範圍。建議追蹤 EU 法規更新，並提早建立供應鏈碳排盤查能力。' },
+    { words: ['手工具','螺絲起子','鉗子','扳手','錘子','hand tool','wrench','plier','hammer','8204','8205','8206'], type: 'not', reason: '一般手工具（HS 第 82 章）目前不在 CBAM 直接適用範圍。注意：若產品大量使用 CN 7318 扣件，該部分可能適用，建議確認產品 CN 碼組成。' },
+    { words: ['pcb','電路板','電子','半導體','晶片','electronics','semiconductor','circuit','8534','8542'], type: 'not', reason: '電子 / 半導體產品目前不在 CBAM Annex I 範圍內。EU 正評估擴大覆蓋範圍，建議追蹤 2027 年後的法規更新，及早建立供應鏈碳排盤查。' },
+    { words: ['自行車','腳踏車','bicycle','bike','8712'], type: 'not', reason: '自行車整車目前不在 CBAM 適用範圍。若車架或零件大量使用鋁 / 鋼原料，上游原料供應商可能受影響。' },
+  ];
+
+  // ── Header 碳價同步 ───────────────────────────────────
+  document.getElementById('ets-override').addEventListener('input', function() {
+    const v = parseFloat(this.value) || 75;
+    document.getElementById('ets-val').textContent = v;
+    document.getElementById('ets-form').value = v;
+  });
+
+  // ── 關鍵字查詢 ───────────────────────────────────────
+  document.getElementById('checker-input').addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    const el = document.getElementById('checker-result');
+    if (!q) { el.className = 'checker-result'; el.innerHTML = ''; return; }
+
+    let found = null;
+    for (const k of KEYWORDS) {
+      if (k.words.some(w => q.includes(w.toLowerCase()) || w.toLowerCase().includes(q))) {
+        found = k; break;
+      }
+    }
+
+    if (!found) {
+      el.className = 'checker-result not-applicable';
+      el.innerHTML = `
+        <div class="result-head">
+          <span class="badge">查無對應</span>
+          <span>找不到「${this.value}」的 CBAM 對應結果</span>
+        </div>
+        <p>請嘗試輸入 HS / CN 碼（如 7318、7208），或參閱
+        <a href="https://www.greentrade.org.tw/CBAM/search" target="_blank">政府 CBAM 產品查詢平台</a>。</p>`;
+      return;
+    }
+
+    if (found.type === 'applicable') {
+      el.className = 'checker-result applicable';
+      el.innerHTML = `
+        <div class="result-head">
+          <span class="badge">直接適用 CBAM</span>
+          <span>${found.name}</span>
+        </div>
+        <p>你的產品屬於 CBAM Annex I 管制範疇，2026 年起出口 EU 需繳納碳邊境費用。</p>
+        <button class="btn-goto" onclick="scrollToCalcAndSet('${found.product}')">前往試算 →</button>`;
+    } else {
+      el.className = 'checker-result not-applicable';
+      el.innerHTML = `
+        <div class="result-head">
+          <span class="badge">目前不直接適用</span>
+          <span>間接影響說明</span>
+        </div>
+        <p>${found.reason}</p>`;
+    }
+  });
+
+  function scrollToCalcAndSet(product) {
+    document.getElementById('product-cat').value = product;
+    onProductChange();
+    document.getElementById('calc-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── 產品類別切換 ─────────────────────────────────────
+  function onProductChange() {
+    const cat = document.getElementById('product-cat').value;
+    const subSel = document.getElementById('product-sub');
+    const cnTag = document.getElementById('cn-tag-label');
+    subSel.innerHTML = '';
+    document.getElementById('intensity').value = '';
+    document.getElementById('benchmark-hint').textContent = '';
+
+    if (!cat) {
+      subSel.innerHTML = '<option value="">── 請先選產品類別 ──</option>';
+      cnTag.textContent = '';
+      return;
+    }
+
+    const p = PRODUCTS[cat];
+    cnTag.textContent = p.cn;
+    p.subs.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.name;
+      subSel.appendChild(opt);
+    });
+    onSubChange();
+  }
+
+  function onSubChange() {
+    const cat = document.getElementById('product-cat').value;
+    const subId = document.getElementById('product-sub').value;
+    if (!cat || !subId) return;
+
+    const sub = PRODUCTS[cat].subs.find(s => s.id === subId);
+    if (!sub) return;
+
+    document.getElementById('intensity').value = sub.def;
+
+    const hint = document.getElementById('benchmark-hint');
+    if (sub.bench) {
+      hint.textContent = `EU 基準值：${sub.bench} tCO₂/t（達標可降低費用 ${Math.round((1 - sub.bench / sub.def) * 100)}%）`;
+    } else {
+      hint.textContent = '';
+    }
+  }
+
+  // ── 計算 ─────────────────────────────────────────────
+  function fmt(n) {
+    return n >= 1000
+      ? n.toLocaleString('zh-TW', { maximumFractionDigits: 0 })
+      : n.toLocaleString('zh-TW', { maximumFractionDigits: 1 });
+  }
+
+  function calculate() {
+    const cat     = document.getElementById('product-cat').value;
+    const subId   = document.getElementById('product-sub').value;
+    const volume  = parseFloat(document.getElementById('volume').value);
+    const intens  = parseFloat(document.getElementById('intensity').value);
+    const twFee   = parseFloat(document.getElementById('tw-fee').value) || 0;
+    const ets     = parseFloat(document.getElementById('ets-override').value) || 75;
+    const fx      = parseFloat(document.getElementById('fx-rate').value) || 34;
+
+    if (!cat) { alert('請選擇產品類別'); return; }
+    if (!volume || volume <= 0) { alert('請輸入出口量（公噸）'); return; }
+    if (!intens || intens <= 0) { alert('請輸入碳排強度'); return; }
+
+    const netPrice = Math.max(ets - twFee, 0);
+    const totalEur = volume * intens * netPrice;
+    const unitEur  = intens * netPrice;
+    const totalNtd = totalEur * fx;
+
+    // 顯示主要數字
+    document.getElementById('r-eur').textContent  = fmt(totalEur);
+    document.getElementById('r-ntd').textContent  = fmt(totalNtd);
+    document.getElementById('r-formula').textContent =
+      `計算式：${fmt(volume)} 噸 × ${intens} tCO₂/t × (€${ets} − €${twFee}) = €${fmt(totalEur)}`;
+    document.getElementById('r-unit').textContent = fmt(unitEur);
+    document.getElementById('r-unit-sub').textContent =
+      `每出口 1 公噸產品的 CBAM 附加成本`;
+
+    // 情境比較
+    const sub = PRODUCTS[cat]?.subs.find(s => s.id === subId);
+    const benchSection = document.getElementById('benchmark-section');
+    if (sub && sub.bench) {
+      const benchEur = volume * sub.bench * netPrice;
+      const savings  = totalEur - benchEur;
+      const savingsPct = Math.round((savings / totalEur) * 100);
+      const barPct = Math.round((benchEur / totalEur) * 100);
+
+      document.getElementById('b-current-int').textContent = intens;
+      document.getElementById('b-current-eur').textContent = fmt(totalEur);
+      document.getElementById('b-bench-int').textContent   = sub.bench;
+      document.getElementById('b-bench-eur').textContent   = fmt(benchEur);
+      document.getElementById('bar-bench').style.width     = barPct + '%';
+      document.getElementById('savings-tag').textContent   =
+        `→ 達標可節省 €${fmt(savings)}（減少 ${savingsPct}%）`;
+      benchSection.classList.remove('hidden');
+    } else {
+      benchSection.classList.add('hidden');
+    }
+
+    // 行動建議
+    const actions = ACTIONS[cat] || [];
+    const list = document.getElementById('action-list');
+    list.innerHTML = actions.map((a, i) => `
+      <div class="action-item">
+        <div class="action-num">${i + 1}</div>
+        <div class="action-text">${a}</div>
+      </div>`).join('');
+
+    // 顯示結果區
+    const resultsEl = document.getElementById('results');
+    resultsEl.classList.add('visible');
+    setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+</script>
+
+</body>
+</html>
