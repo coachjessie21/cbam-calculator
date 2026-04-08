@@ -1,7 +1,7 @@
 # EU CBAM 出口碳關稅試算器
 **Taiwan Exporter's CBAM Cost Calculator**
 
-Live demo → [部署後填入 Netlify URL]
+Live demo → https://cbam-taiwan.netlify.app
 
 ---
 
