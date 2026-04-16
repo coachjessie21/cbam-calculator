@@ -814,7 +814,7 @@
       <!-- 導流 CTA（結果下方快速行動） -->
       <div class="cbam-sim-cta">
         <p>看到費用數字了嗎？<strong>一次 30 分鐘諮詢</strong>，幫你找出最有效的降費路徑。</p>
-        <a href="mailto:jessie@ahbase.com?subject=CBAM%20碳關稅諮詢" class="btn-sim-cta">預約 30 分鐘諮詢 →</a>
+        <a href="https://calendar.app.google/yz9edJxyySbihWEy6" class="btn-sim-cta">預約 30 分鐘諮詢 →</a>
       </div>
     </section>
 
@@ -863,7 +863,7 @@
       <div class="cbam-submit-note">免費 · 不垃圾信 · 隨時可退訂</div>
       <div class="cbam-success-msg" id="cbam-success">
         已收到！覺心營 ESG 顧問將在 <strong>48 小時內</strong>寄出你的 CBAM 分析報告。<br>
-        也歡迎直接 <a href="mailto:jessie@ahbase.com?subject=CBAM%20碳關稅諮詢" style="color:var(--green);">預約 30 分鐘諮詢</a>，加快應對進度。
+        也歡迎直接 <a href="https://calendar.app.google/yz9edJxyySbihWEy6" style="color:var(--green);">預約 30 分鐘諮詢</a>，加快應對進度。
       </div>
     </div>
   </div>
@@ -904,7 +904,7 @@
       <ul>
         <li>政府 CBAM 服務平台：<a href="https://www.greentrade.org.tw/CBAM/" target="_blank" rel="noopener">greentrade.org.tw/CBAM</a></li>
         <li>EU 官方 CBAM 資訊：<a href="https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en" target="_blank" rel="noopener">taxation-customs.ec.europa.eu</a></li>
-        <li>如需 ESG 顧問協助：<a href="mailto:jessie@ahbase.com?subject=CBAM%20碳關稅諮詢" style="display:inline-block;margin-top:6px;background:linear-gradient(135deg,#FFD600,#FF7200,#E84000);color:#fff;font-weight:700;font-size:0.85rem;padding:7px 18px;border-radius:999px;text-decoration:none;letter-spacing:0.5px;">聯絡覺心營</a></li>
+        <li>如需 ESG 顧問協助：<a href="https://calendar.app.google/yz9edJxyySbihWEy6" style="display:inline-block;margin-top:6px;background:linear-gradient(135deg,#FFD600,#FF7200,#E84000);color:#fff;font-weight:700;font-size:0.85rem;padding:7px 18px;border-radius:999px;text-decoration:none;letter-spacing:0.5px;">聯絡覺心營</a></li>
       </ul>
     </div>
 
@@ -1213,8 +1213,9 @@
 
     fetch(GAS_WEBHOOK, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ ...payload, secret: '$$$Ahbase2026' })
     })
     .then(() => {
       document.getElementById('cbam-success').style.display = 'block';
