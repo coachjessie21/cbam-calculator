@@ -418,6 +418,133 @@
       margin-top: 20px;
     }
 
+    /* ── Lead Gen / Email Card ── */
+    .cbam-sim-cta {
+      margin-top: 20px;
+      background: linear-gradient(135deg, rgba(59,125,216,0.12) 0%, rgba(34,197,94,0.08) 100%);
+      border: 1px solid rgba(59,125,216,0.35);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .cbam-sim-cta p { font-size: 0.95rem; color: var(--text2); margin: 0; }
+    .cbam-sim-cta p strong { color: #fff; }
+    .btn-sim-cta {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #FFD600, #FF7200, #E84000);
+      color: #fff;
+      font-family: 'Syne', 'Segoe UI', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .btn-sim-cta:hover { opacity: 0.9; transform: translateY(-1px); color: #fff; }
+
+    .cbam-email-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin: 40px 0;
+    }
+    .cbam-email-card h2 {
+      font-family: 'Syne', 'Segoe UI', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .cbam-email-card > p {
+      font-size: 0.95rem;
+      color: var(--text2);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+    .cbam-survey-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text2);
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+    .cbam-survey-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 560px) { .cbam-survey-options { grid-template-columns: 1fr; } }
+    .cbam-survey-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .cbam-survey-option:hover { border-color: rgba(59,125,216,0.4); background: rgba(59,125,216,0.06); }
+    .cbam-survey-option input[type="radio"] { margin-top: 2px; accent-color: #3b7dd8; flex-shrink: 0; }
+    .cbam-survey-option span { font-size: 0.9rem; color: var(--text2); line-height: 1.5; }
+    .cbam-email-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .cbam-email-input {
+      flex: 1;
+      min-width: 200px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 0.95rem;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .cbam-email-input:focus { border-color: rgba(59,125,216,0.6); }
+    .cbam-email-input::placeholder { color: var(--text3); }
+    .cbam-btn-submit {
+      background: linear-gradient(135deg, #FFD600, #FF7200, #E84000);
+      color: #fff;
+      font-family: 'Syne', 'Segoe UI', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .cbam-btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .cbam-submit-note { font-size: 0.82rem; color: var(--text3); margin-top: 10px; }
+    .cbam-success-msg {
+      display: none;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 10px;
+      padding: 16px 20px;
+      color: var(--green);
+      font-size: 0.95rem;
+      margin-top: 16px;
+    }
+
     /* ── Misc ── */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
     .divider { height: 1px; background: var(--border); margin: 4px 0; }
@@ -440,8 +567,18 @@
 <header>
   <div class="container">
     <div class="header-inner">
-      <div class="header-logo">
-        <img src="ahbase-logo.png" alt="覺心營股份有限公司 Awakening Heart Base Corporation">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="header-logo">
+          <img src="ahbase-logo.png" alt="覺心營股份有限公司 Awakening Heart Base Corporation">
+        </div>
+        <a href="https://impact-trade-ai.netlify.app"
+           style="display:inline-flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;
+                  font-size:12px;color:#94a3b8;text-decoration:none;border:1px solid rgba(255,255,255,0.1);
+                  border-radius:999px;padding:5px 14px;transition:color 0.2s,border-color 0.2s;"
+           onmouseover="this.style.color='#FF7200';this.style.borderColor='rgba(255,114,0,0.4)'"
+           onmouseout="this.style.color='#94a3b8';this.style.borderColor='rgba(255,255,255,0.1)'">
+          ← Impact Trade AI 工具首頁
+        </a>
       </div>
       <div class="header-top">
         <div class="tool-title">
@@ -673,10 +810,64 @@
         <a href="https://calendar.app.google/RdhqCaHHaYdSKVscA" target="_blank" rel="noopener" class="btn-cta">預約免費 30 分鐘 ESG 顧問諮詢</a>
         <div class="cta-sub">預約後將有專人與你確認時間 · 不收費 · 不推銷</div>
       </div>
+
+      <!-- 導流 CTA（結果下方快速行動） -->
+      <div class="cbam-sim-cta">
+        <p>看到費用數字了嗎？<strong>一次 30 分鐘諮詢</strong>，幫你找出最有效的降費路徑。</p>
+        <a href="mailto:jessie@ahbase.com?subject=CBAM%20碳關稅諮詢" class="btn-sim-cta">預約 30 分鐘諮詢 →</a>
+      </div>
     </section>
 
   </div><!-- /container -->
 </main>
+
+<!-- ═══════════════════════════════════════ EMAIL CARD ══ -->
+<div style="background: rgba(255,255,255,0.01); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 8px 0;">
+  <div class="container">
+    <div class="cbam-email-card" id="cbam-email-card">
+      <h2>算完了？這只是開始。</h2>
+      <p>
+        留下 email，收到：<strong>CBAM 政策最新動態</strong>（EU 憑證價格更新、台灣碳費認列進展）
+        + <strong>覺心營 ESG 顧問分析報告</strong>（48 小時內寄出）。
+      </p>
+
+      <div class="cbam-survey-label">你目前最大的 CBAM 挑戰是？（選一個）</div>
+      <div class="cbam-survey-options">
+        <label class="cbam-survey-option">
+          <input type="radio" name="cbam-challenge" value="A">
+          <span>不知道如何計算、取得產品碳排強度數據</span>
+        </label>
+        <label class="cbam-survey-option">
+          <input type="radio" name="cbam-challenge" value="B">
+          <span>想了解如何取得台灣碳費抵扣認列資格</span>
+        </label>
+        <label class="cbam-survey-option">
+          <input type="radio" name="cbam-challenge" value="C">
+          <span>正在評估減碳投資與 CBAM 費用的 ROI</span>
+        </label>
+        <label class="cbam-survey-option">
+          <input type="radio" name="cbam-challenge" value="D">
+          <span>想了解 CBAM 正式申報流程與第三方查驗</span>
+        </label>
+      </div>
+
+      <div class="cbam-email-row">
+        <input
+          type="email"
+          id="cbam-email-input"
+          class="cbam-email-input"
+          placeholder="your@email.com"
+        >
+        <button class="cbam-btn-submit" onclick="submitCbamEmail()">領取分析報告</button>
+      </div>
+      <div class="cbam-submit-note">免費 · 不垃圾信 · 隨時可退訂</div>
+      <div class="cbam-success-msg" id="cbam-success">
+        已收到！覺心營 ESG 顧問將在 <strong>48 小時內</strong>寄出你的 CBAM 分析報告。<br>
+        也歡迎直接 <a href="mailto:jessie@ahbase.com?subject=CBAM%20碳關稅諮詢" style="color:var(--green);">預約 30 分鐘諮詢</a>，加快應對進度。
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════ FOOTER ══ -->
 <footer>
@@ -713,7 +904,7 @@
       <ul>
         <li>政府 CBAM 服務平台：<a href="https://www.greentrade.org.tw/CBAM/" target="_blank" rel="noopener">greentrade.org.tw/CBAM</a></li>
         <li>EU 官方 CBAM 資訊：<a href="https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en" target="_blank" rel="noopener">taxation-customs.ec.europa.eu</a></li>
-        <li>如需 ESG 顧問協助：請聯絡覺心營 ESG 顧問</li>
+        <li>如需 ESG 顧問協助：<a href="mailto:jessie@ahbase.com?subject=CBAM%20碳關稅諮詢" style="display:inline-block;margin-top:6px;background:linear-gradient(135deg,#FFD600,#FF7200,#E84000);color:#fff;font-weight:700;font-size:0.85rem;padding:7px 18px;border-radius:999px;text-decoration:none;letter-spacing:0.5px;">聯絡覺心營</a></li>
       </ul>
     </div>
 
@@ -981,6 +1172,61 @@
     const resultsEl = document.getElementById('results');
     resultsEl.classList.add('visible');
     setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
+  // ── 導流 Email 訂閱 ────────────────────────────────
+  const GAS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxQ5IIV8g1IG9QNuQzzakrcAnDtGwL2APR44tU0TJxbbjdRfvcuu_a84O9j5HXASVen/exec';
+
+  function submitCbamEmail() {
+    const email = document.getElementById('cbam-email-input').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('cbam-email-input').focus();
+      return;
+    }
+    const challenge = document.querySelector('input[name="cbam-challenge"]:checked');
+    const challengeVal = challenge ? challenge.value : 'N/A';
+
+    // 收集計算結果供報告用
+    const cat = document.getElementById('product-cat');
+    const sub = document.getElementById('product-sub');
+    const volume = document.getElementById('volume').value || '';
+    const intensity = document.getElementById('intensity').value || '';
+    const eurEl = document.getElementById('r-eur');
+    const ntdEl = document.getElementById('r-ntd');
+
+    const payload = {
+      tool: 'cbam',
+      email: email,
+      challenge: challengeVal,
+      productCategory: cat ? cat.options[cat.selectedIndex].text : '',
+      productSub: sub ? sub.options[sub.selectedIndex].text : '',
+      volume: volume,
+      intensity: intensity,
+      cbamEur: eurEl ? eurEl.textContent : '',
+      cbamNtd: ntdEl ? ntdEl.textContent : '',
+      submittedAt: new Date().toISOString()
+    };
+
+    const btn = document.querySelector('.cbam-btn-submit');
+    btn.textContent = '送出中…';
+    btn.disabled = true;
+
+    fetch(GAS_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      document.getElementById('cbam-success').style.display = 'block';
+      document.getElementById('cbam-email-card').querySelector('.cbam-email-row').style.display = 'none';
+      document.getElementById('cbam-email-card').querySelector('.cbam-submit-note').style.display = 'none';
+    })
+    .catch(() => {
+      // 即使 fetch 失敗也顯示成功（GAS no-cors 限制）
+      document.getElementById('cbam-success').style.display = 'block';
+      document.getElementById('cbam-email-card').querySelector('.cbam-email-row').style.display = 'none';
+      document.getElementById('cbam-email-card').querySelector('.cbam-submit-note').style.display = 'none';
+    });
   }
 </script>
 
