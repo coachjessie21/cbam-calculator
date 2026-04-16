@@ -1183,13 +1183,21 @@
       document.getElementById('cbam-email-input').focus();
       return;
     }
+
+    // 必須先完成計算才能送出
+    const cat = document.getElementById('product-cat');
+    const volume = document.getElementById('volume').value || '';
+    const eurEl = document.getElementById('r-eur');
+    const eurVal = eurEl ? eurEl.textContent.replace(/[^0-9.]/g, '') : '';
+    if (!cat || !cat.value || !volume || !eurVal || parseFloat(eurVal) === 0) {
+      alert('請先填寫並計算 CBAM 成本，再領取分析報告。');
+      return;
+    }
+
     const challenge = document.querySelector('input[name="cbam-challenge"]:checked');
     const challengeVal = challenge ? challenge.value : 'N/A';
 
-    // 收集計算結果供報告用
-    const cat = document.getElementById('product-cat');
     const sub = document.getElementById('product-sub');
-    const volume = document.getElementById('volume').value || '';
     const intensity = document.getElementById('intensity').value || '';
     const eurEl = document.getElementById('r-eur');
     const ntdEl = document.getElementById('r-ntd');
